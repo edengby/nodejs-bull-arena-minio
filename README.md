@@ -10,6 +10,7 @@ docker-compose build
 ## Usage
 
 ```
+docker volume create --name=storage-minio
 docker-compose up
 ```
 
