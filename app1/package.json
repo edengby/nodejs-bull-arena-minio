@@ -1,0 +1,20 @@
+{
+  "name": "app1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "inspect": "kill-port --port 9229 && node --inspect=0.0.0.0:9229 build/startup.js",
+    "start_watch_inspect": "nodemon --delay 80ms --watch build/ build/startup.js --exec 'npm run inspect'",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bull": "^4.1.1",
+    "bull-arena": "^3.29.3",
+    "minio": "^7.0.25",
+    "nodemon": "^2.0.15"
+  }
+}
