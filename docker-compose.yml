@@ -1,0 +1,75 @@
+version: '3.9'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  web:
+    build: app1/.
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://my-cache
+      - ACCESS_KEY=minioadmin
+      - SECRET_KEY=minioadmin
+    command:
+      - '/bin/sh'
+      - '-c'
+      - '/bin/sleep 5 && npm start'
+    ports:
+      - '3001:3001'
+    networks:
+      - app-tier
+  web2:
+    build: app2/.
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://my-cache
+      - ACCESS_KEY=minioadmin
+      - SECRET_KEY=minioadmin
+    command:
+      - '/bin/sh'
+      - '-c'
+      - '/bin/sleep 5 && npm start'
+    ports:
+      - '3002:3002'
+    networks:
+      - app-tier
+  arena:
+    build: arena/.
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://my-cache
+    depends_on:
+      - redis
+    networks:
+      - app-tier
+    command: npm start
+    ports:
+      - '3033:3033'
+  redis:
+    image: redis
+    container_name: my-cache
+    networks:
+      - app-tier
+    expose:
+      - '6379'
+  minio-server:
+    image: minio/minio:latest
+    ports:
+      - '9001:9005'
+      - '9002:9098'
+    networks:
+      - app-tier
+    depends_on:
+      - redis
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - storage-minio:/data
+    command: server --address ':9098' --console-address ':9005' /data
+    restart: always # necessary since it's failing to start sometimes
+volumes:
+  storage-minio:
+    external: true
