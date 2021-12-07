@@ -55,7 +55,7 @@ services:
     expose:
       - '6379'
   minio-server:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2021-11-24T23-19-33Z.fips
     ports:
       - '9001:9005'
       - '9002:9098'
